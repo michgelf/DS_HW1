@@ -3,12 +3,13 @@
 
 #include "BinarySearchTree.h"
 
-#include <algorithm>
-
 template<class T>
 class AVLTree : public BinarySearchTree<T> {
 
 private:
+
+    static int max(int a, int b);
+
     static int nodeHeight(Node<T>* node);
 
     static int balanceFactor(Node<T>* node);
@@ -35,6 +36,12 @@ public:
 
 };
 
+
+template<class T>
+int AVLTree<T>::max(int a, int b) {
+    return a < b ? b : a;
+}
+
 template<class T>
 int AVLTree<T>::nodeHeight(Node<T>* node) {
     return node ? node->height : -1;
@@ -42,7 +49,7 @@ int AVLTree<T>::nodeHeight(Node<T>* node) {
 
 template<class T>
 void AVLTree<T>::updateHeight(Node<T>* node) {
-    node->height = 1 + std::max(nodeHeight(node->left), nodeHeight(node->right));
+    node->height = 1 + max(nodeHeight(node->left), nodeHeight(node->right));
 }
 
 template<class T>
