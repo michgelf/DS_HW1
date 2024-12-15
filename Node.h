@@ -24,9 +24,7 @@ public:
     Node(const Node&) = delete;
 
     Node& operator=(const Node&) = delete;
-
-    static int nodeHeight(Node<T>* node);
-
+    
     bool hasLeft() const;
 
     bool hasRight() const;
@@ -36,8 +34,6 @@ public:
     SonKind sonKind() const;
 
     int numSons() const;
-
-    int bf() const;
 
 
 };
@@ -82,16 +78,6 @@ SonKind Node<T>::sonKind() const {
 template<class T>
 int Node<T>::numSons() const {
     return hasLeft() + hasRight();
-}
-
-template<class T>
-int Node<T>::nodeHeight(Node<T>* node) {
-    return node ? node->height : -1;
-}
-
-template<class T>
-int Node<T>::bf() const {
-    return nodeHeight(this->left) - nodeHeight(this->right);
 }
 
 #endif

@@ -9,8 +9,9 @@ template<class T>
 class AVLTree : public BinarySearchTree<T> {
 
 private:
-
     static int nodeHeight(Node<T>* node);
+
+    static int balanceFactor(Node<T>* node);
 
     static void updateHeight(Node<T>* node);
 
@@ -104,16 +105,16 @@ void AVLTree<T>::rollRL(Node<T>* node) {
 
 template<class T>
 bool AVLTree<T>::rollIfNeeded(Node<T>* node) {
-    int bf = node->bf();
+    int bf = balanceFactor(node);
     if (bf == 2) {
-        if (node->left->bf() == -1) {
+        if (balanceFactor(node->left) == -1) {
             rollLR(node);
         } else {
             rollLL(node);
         }
         return true;
     } else if (bf == -2) {
-        if (node->right->bf() == 1) {
+        if (balanceFactor(node->right) == 1) {
             rollRL(node);
         } else {
             rollRR(node);
@@ -141,7 +142,6 @@ Node<T>* AVLTree<T>::insert(const T& data) {
         if (rollIfNeeded(p)) {
             break;
         }
-
         v = p;
     }
     return insertedNode;
@@ -161,6 +161,11 @@ Node<T>* AVLTree<T>::remove(Node<T>* nodeToRemove) {
         v = v->parent;
     }
     return parent;
+}
+
+template<class T>
+int AVLTree<T>::balanceFactor(Node<T>* node) {
+    return nodeHeight(node->left) - nodeHeight(node->right);
 }
 
 
