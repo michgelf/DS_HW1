@@ -2,6 +2,9 @@
 #define NODE_H
 
 #include <cassert>
+#include <memory>
+
+using namespace std;
 
 
 enum struct SonKind {
@@ -11,20 +14,21 @@ enum struct SonKind {
 template<class T>
 class Node {
 public:
-    T data;
+    int key;
+    unique_ptr<T> data;
     Node* left;
     Node* right;
     Node* parent;
     int height;
 
-    Node(const T& data, Node<T>* parent);
+    Node(int key, const T& data, Node<T>* parent);
 
     virtual ~Node();
 
     Node(const Node&) = delete;
 
     Node& operator=(const Node&) = delete;
-    
+
     bool hasLeft() const;
 
     bool hasRight() const;
@@ -40,8 +44,9 @@ public:
 
 
 template<class T>
-Node<T>::Node(const T& data, Node<T>* parent) : data(data), left(nullptr), right(nullptr),
-                                                parent(parent), height(0) {};
+Node<T>::Node(int key, const T& data, Node<T>* parent) : key(key), data(make_unique<T>(data)),
+                                                         left(nullptr), right(nullptr),
+                                                         parent(parent), height(0) {};
 
 template<class T>
 Node<T>::~Node() {

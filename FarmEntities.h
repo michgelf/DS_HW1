@@ -22,6 +22,8 @@ struct Horse {
 struct Herd {
     int id;
     AVLTree<Horse*> horses;
+
+    explicit Herd(int id) : id(id), horses() {}
 };
 
 

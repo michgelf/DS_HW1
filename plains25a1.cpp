@@ -4,57 +4,44 @@
 #include "plains25a1.h"
 
 
-Plains::Plains()
-{
-    
+Plains::Plains() : clock(0), horses(), herds(), emptyHerds() {}
+
+Plains::~Plains() {
+
 }
 
-Plains::~Plains()
-{
-    
-}
-
-StatusType Plains::add_herd(int herdId)
-{
+StatusType Plains::add_herd(int herdId) {
     return StatusType::FAILURE;
 }
 
-StatusType Plains::remove_herd(int herdId)
-{
+StatusType Plains::remove_herd(int herdId) {
     return StatusType::FAILURE;
 }
 
-StatusType Plains::add_horse(int horseId, int speed)
-{
+StatusType Plains::add_horse(int horseId, int speed) {
     return StatusType::FAILURE;
 }
 
-StatusType Plains::join_herd(int horseId, int herdId)
-{
+StatusType Plains::join_herd(int horseId, int herdId) {
     return StatusType::FAILURE;
 }
 
-StatusType Plains::follow(int horseId, int horseToFollowId)
-{
+StatusType Plains::follow(int horseId, int horseToFollowId) {
     return StatusType::FAILURE;
 }
 
-StatusType Plains::leave_herd(int horseId)
-{
+StatusType Plains::leave_herd(int horseId) {
     return StatusType::FAILURE;
 }
 
-output_t<int> Plains::get_speed(int horseId)
-{
+output_t<int> Plains::get_speed(int horseId) {
     return 0;
 }
 
-output_t<bool> Plains::leads(int horseId, int otherHorseId)
-{
+output_t<bool> Plains::leads(int horseId, int otherHorseId) {
     return false;
 }
 
-output_t<bool> Plains::can_run_together(int herdId)
-{
+output_t<bool> Plains::can_run_together(int herdId) {
     return false;
 }

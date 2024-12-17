@@ -1,26 +1,38 @@
-// 
+//
 // 234218 Data Structures 1.
 // Semester: 2025A (Winter).
 // Wet Exercise #1.
-// 
+//
 // The following header file contains all methods we expect you to implement.
 // You MAY add private methods and fields of your own.
 // DO NOT erase or modify the signatures of the public methods.
 // DO NOT modify the preprocessors in this file.
 // DO NOT use the preprocessors in your other code files.
-// 
+//
 
 #ifndef PLAINS25WINTER_WET1_H_
 #define PLAINS25WINTER_WET1_H_
 
+#include <memory>
+
+using namespace std;
+
+
 #include "wet1util.h"
+#include "FarmEntities.h"
+
 
 class Plains {
 private:
     //
     // Here you may add anything you want
     //
-    
+    int clock;
+    AVLTree<Horse> horses;
+    AVLTree<Herd> herds;
+    AVLTree<Herd> emptyHerds;
+
+
 public:
     // <DO-NOT-MODIFY> {
     Plains();

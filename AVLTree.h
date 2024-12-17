@@ -30,7 +30,7 @@ private:
 
 public:
 
-    Node<T>* insert(const T& data) override;
+    Node<T>* insert(int key, const T& data) override;
 
     Node<T>* remove(Node<T>* nodeToRemove) override;
 
@@ -133,8 +133,8 @@ bool AVLTree<T>::rollIfNeeded(Node<T>* node) {
 
 
 template<class T>
-Node<T>* AVLTree<T>::insert(const T& data) {
-    Node<T>* insertedNode = BinarySearchTree<T>::insert(data);;
+Node<T>* AVLTree<T>::insert(int key, const T& data) {
+    Node<T>* insertedNode = BinarySearchTree<T>::insert(key, data);;
     if (insertedNode == nullptr) {
         return nullptr;
     }
