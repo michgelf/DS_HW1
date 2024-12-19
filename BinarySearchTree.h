@@ -11,7 +11,7 @@ private:
 
     static Node<T>* findAux(Node<T>* currNode, int key);
 
-    static Node<T>* insertAux(Node<T>* currNode, int key, const T& data);
+    static Node<T>* insertAux(Node<T>* currNode, int key, unique_ptr<T> data);
 
     void removeLeaf(Node<T>* leaf); //assumes the given node is a leaf
 
@@ -24,7 +24,7 @@ public:
 
     Node<T>* find(int key);
 
-    virtual Node<T>* insert(int key, const T& data);
+    virtual Node<T>* insert(int key, unique_ptr<T> data);
 
     virtual Node<T>* remove(Node<T>* nodeToRemove);
 
@@ -46,18 +46,18 @@ Node<T>* BinarySearchTree<T>::findAux(Node<T>* currNode, int key) {
 }
 
 template<class T>
-Node<T>* BinarySearchTree<T>::insertAux(Node<T>* currNode, int key, const T& data) {
+Node<T>* BinarySearchTree<T>::insertAux(Node<T>* currNode, int key, unique_ptr<T> data) {
     if (key < currNode->key) {
         if (currNode->hasLeft()) {
-            return insertAux(currNode->left, key, data);
+            return insertAux(currNode->left, key, std::move(data));
         } else {
-            return currNode->left = new Node<T>(key, data, currNode);
+            return currNode->left = new Node<T>(key, std::move(data), currNode);
         }
     } else if (currNode->key < key) {
         if (currNode->hasRight()) {
-            return insertAux(currNode->right, key, data);
+            return insertAux(currNode->right, key, std::move(data));
         } else {
-            return currNode->right = new Node<T>(key, data, currNode);
+            return currNode->right = new Node<T>(key, std::move(data), currNode);
         }
     }
     return nullptr;
@@ -129,12 +129,12 @@ Node<T>* BinarySearchTree<T>::find(int key) {
 }
 
 template<class T>
-Node<T>* BinarySearchTree<T>::insert(int key, const T& data) {
+Node<T>* BinarySearchTree<T>::insert(int key, unique_ptr<T> data) {
     Node<T>* newNode;
     if (this->isEmpty()) {
-        newNode = this->root = new Node<T>(key, data, nullptr);
+        newNode = this->root = new Node<T>(key, std::move(data), nullptr);
     } else {
-        newNode = insertAux(this->root, key, data);
+        newNode = insertAux(this->root, key, std::move(data));
     }
 
     if (newNode != nullptr) {

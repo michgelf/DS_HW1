@@ -21,7 +21,7 @@ public:
     Node* parent;
     int height;
 
-    Node(int key, const T& data, Node<T>* parent);
+    Node(int key, unique_ptr<T> data, Node<T>* parent);
 
     virtual ~Node();
 
@@ -44,9 +44,9 @@ public:
 
 
 template<class T>
-Node<T>::Node(int key, const T& data, Node<T>* parent) : key(key), data(make_unique<T>(data)),
-                                                         left(nullptr), right(nullptr),
-                                                         parent(parent), height(0) {};
+Node<T>::Node(int key, unique_ptr<T> data, Node<T>* parent) : key(key), data(std::move(data)),
+                                                              left(nullptr), right(nullptr),
+                                                              parent(parent), height(0) {};
 
 template<class T>
 Node<T>::~Node() {

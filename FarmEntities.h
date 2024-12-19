@@ -24,6 +24,8 @@ struct Herd {
     AVLTree<Horse*> horses;
 
     explicit Herd(int id) : id(id), horses() {}
+
+    bool isEmpty() const { return horses.isEmpty(); }
 };
 
 

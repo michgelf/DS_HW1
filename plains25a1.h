@@ -32,9 +32,13 @@ private:
     AVLTree<Herd> herds;
     AVLTree<Herd> emptyHerds;
 
-    void transferHerdFromEmpty(int herdId);
+    Node<Herd>* moveHerdFromEmpty(int herdId, Node<Herd>* nodeToRemove);
 
-    void transferHerdToEmpty(int herdId);
+    void moveHerdToEmpty(int herdId);
+
+    Horse* getLeader(Horse* horse) const;
+
+    int countNonFollowers(int herdId) const;
 
 
 public:
