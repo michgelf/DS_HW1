@@ -32,6 +32,10 @@ private:
     AVLTree<Herd> herds;
     AVLTree<Herd> emptyHerds;
 
+    void transferHerdFromEmpty(int herdId);
+
+    void transferHerdToEmpty(int herdId);
+
 
 public:
     // <DO-NOT-MODIFY> {
