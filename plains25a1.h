@@ -36,12 +36,14 @@ private:
 
     void moveHerdToEmpty(int herdId);
 
-    Horse* getLeader(Horse* horse) const;
+    static Horse* getLeader(Horse* horse);
 
-    int countNonFollowers(int herdId) const;
+    static void resetPaths(Node<Herd>* herdNode);
 
+    static bool checkAndPlant(Horse* horse, Horse* candidate);
 
 public:
+
     // <DO-NOT-MODIFY> {
     Plains();
 

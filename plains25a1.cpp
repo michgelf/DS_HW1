@@ -7,9 +7,7 @@
 
 Plains::Plains() : clock(0), horses(), herds(), emptyHerds() {}
 
-Plains::~Plains() {
-
-}
+Plains::~Plains() {}
 
 StatusType Plains::add_herd(int herdId) {
     if (herdId <= 0) {
@@ -83,8 +81,7 @@ StatusType Plains::join_herd(int horseId, int herdId) {
         }
         horseNode->data->herd = herdNode->data.get();
         herdNode->data->horses.insert(horseId, make_unique<Horse*>(horseNode->data.get()));
-    }
-    catch (const std::bad_alloc& e) {
+    } catch (const std::bad_alloc& e) {
         return StatusType::ALLOCATION_ERROR;
     }
     horseNode->data->joinHerdTime = this->clock;
@@ -167,9 +164,25 @@ output_t<bool> Plains::leads(int horseId, int otherHorseId) {
 }
 
 output_t<bool> Plains::can_run_together(int herdId) {
+    if (herdId <= 0) {
+        return StatusType::INVALID_INPUT;
+    }
+    auto herdNode = herds.find(herdId);
+    if (!herdNode) {
+        return StatusType::FAILURE;
+    }
 
-    return false;
+    auto candidateNode = herdNode->data->horses.findFirstMatchingNode(
+            [](Horse* horse) { return getLeader(horse) == nullptr; });
+    auto candidateHorse = *(candidateNode->data);
+
+    resetPaths(herdNode);
+    return herdNode->data->horses.applyFuncBool(
+            [candidateHorse](Horse* horse) { return checkAndPlant(horse, candidateHorse); });
+
 }
+
+// private methods
 
 Node<Herd>* Plains::moveHerdFromEmpty(int herdId, Node<Herd>* nodeToRemove) {
     emptyHerds.remove(nodeToRemove);
@@ -181,15 +194,40 @@ void Plains::moveHerdToEmpty(int herdId) {
     emptyHerds.insert(herdId, make_unique<Herd>(herdId));
 }
 
-Horse* Plains::getLeader(Horse* horse) const {
+Horse* Plains::getLeader(Horse* horse) {
     if (!horse->leader || horse->herd != horse->leader->herd ||
         horse->leader->joinHerdTime >= horse->followTime) {
         return nullptr;
     }
     return horse->leader;
-
 }
 
-int Plains::countNonFollowers(int herdId) const {
-    
+void Plains::resetPaths(Node<Herd>* herdNode) {
+    herdNode->data->horses.applyFunc([](Horse* horse) { horse->pathId = 0; });
 }
+
+bool Plains::checkAndPlant(Horse* horse, Horse* candidate) {
+    if (horse->pathId != 0) {
+        return true;
+    }
+    horse->pathId = horse->id;
+
+    Horse* currHorse = horse;
+    Horse* currLeader = getLeader(horse);
+    while (true) {
+        if (!currLeader) {
+            return currHorse == candidate;
+        }
+        if (currLeader->pathId != 0) {
+            if (currHorse->pathId == currLeader->pathId) { // loop
+                return false;
+            }
+            return true; // already seen
+        }
+
+        currLeader->pathId = horse->id; // planting
+        currHorse = currLeader;
+        currLeader = getLeader(currHorse);
+    }
+}
+

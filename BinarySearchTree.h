@@ -22,7 +22,7 @@ private:
 public:
     BinarySearchTree();
 
-    Node<T>* find(int key);
+    Node<T>* find(int key) const;
 
     virtual Node<T>* insert(int key, unique_ptr<T> data);
 
@@ -124,7 +124,7 @@ void BinarySearchTree<T>::removeTwoSonsNode(Node<T>* nodeToRemove) {
 }
 
 template<class T>
-Node<T>* BinarySearchTree<T>::find(int key) {
+Node<T>* BinarySearchTree<T>::find(int key) const {
     return findAux(this->root, key);
 }
 
