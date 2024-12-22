@@ -42,6 +42,8 @@ private:
 
     static bool checkAndPlant(Horse* horse, Horse* candidate);
 
+    static void resetHorse(Horse* horse);
+
 public:
 
     // <DO-NOT-MODIFY> {

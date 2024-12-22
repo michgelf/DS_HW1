@@ -131,13 +131,8 @@ StatusType Plains::leave_herd(int horseId) {
     } catch (const std::bad_alloc& e) {
         return StatusType::ALLOCATION_ERROR;
     }
-    Horse* horse = horseNode->data.get();
-    horse->herd = nullptr;
-    horse->leader = nullptr;
-    horse->followTime = -1;
-    horse->joinHerdTime = -1;
+    resetHorse(horseNode->data.get());
     return StatusType::SUCCESS;
-
 }
 
 output_t<int> Plains::get_speed(int horseId) {
@@ -247,5 +242,12 @@ bool Plains::checkAndPlant(Horse* horse, Horse* candidate) {
         currHorse = currLeader;
         currLeader = getLeader(currHorse);
     }
+}
+
+void Plains::resetHorse(Horse* horse) {
+    horse->herd = nullptr;
+    horse->leader = nullptr;
+    horse->followTime = -1;
+    horse->joinHerdTime = -1;
 }
 
