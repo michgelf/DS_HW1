@@ -7,19 +7,20 @@
 
 Plains::Plains() : clock(0), horses(), herds(), emptyHerds() {}
 
-Plains::~Plains() {}
+Plains::~Plains() = default;
 
 StatusType Plains::add_herd(int herdId) {
     if (herdId <= 0) {
         return StatusType::INVALID_INPUT;
     }
+    // todo check for Id in empty herd
     if (herds.find(herdId)) {
         return StatusType::FAILURE;
     }
     try {
         emptyHerds.insert(herdId, unique_ptr<Herd>(new Herd(herdId)));
         return StatusType::SUCCESS;
-    } catch (const std::bad_alloc& e) {
+    } catch (const std::bad_alloc &e) {
         return StatusType::ALLOCATION_ERROR;
     }
 }
@@ -35,7 +36,7 @@ StatusType Plains::remove_herd(int herdId) {
     try {
         emptyHerds.remove(herdToRemove);
         return StatusType::SUCCESS;
-    } catch (const std::bad_alloc& e) {
+    } catch (const std::bad_alloc &e) {
         return StatusType::ALLOCATION_ERROR;
     }
 }
@@ -52,7 +53,7 @@ StatusType Plains::add_horse(int horseId, int speed) {
     try {
         horses.insert(horseId, unique_ptr<Horse>(new Horse(horseId, speed)));
         return StatusType::SUCCESS;
-    } catch (const std::bad_alloc& e) {
+    } catch (const std::bad_alloc &e) {
         return StatusType::ALLOCATION_ERROR;
     }
 
@@ -69,6 +70,7 @@ StatusType Plains::join_herd(int horseId, int herdId) {
     }
 
     auto herdNode = herds.find(herdId);
+    // todo if found herd ID dont check empty herds
     auto emptyHerdNode = emptyHerds.find(herdId);
     if (!herdNode && !emptyHerdNode) {
         return StatusType::FAILURE;
@@ -79,15 +81,15 @@ StatusType Plains::join_herd(int horseId, int herdId) {
         if (emptyHerdNode) {
             herdNode = moveHerdFromEmpty(herdId, emptyHerdNode);
         }
-        Horse* horse = horseNode->data.get();
+        Horse *horse = horseNode->data.get();
         assert(horse->leader == nullptr && horse->followTime == -1 && horse->joinHerdTime == -1);
-        Herd* herd = herdNode->data.get();
+        Herd *herd = herdNode->data.get();
 
-        herd->horses.insert(horseId, unique_ptr<Horse*>(new Horse*(horse)));
+        herd->horses.insert(horseId, unique_ptr<Horse *>(new Horse *(horse)));
         horse->herd = herdNode->data.get();
         horse->joinHerdTime = this->clock;
         clock++;
-    } catch (const std::bad_alloc& e) {
+    } catch (const std::bad_alloc &e) {
         return StatusType::ALLOCATION_ERROR;
     }
 
@@ -104,9 +106,9 @@ StatusType Plains::follow(int horseId, int horseToFollowId) {
         horseNode->data->herd != horseToFollowNode->data->herd) {
         return StatusType::FAILURE;
     }
-    Horse* horse = horseNode->data.get();
+    Horse *horse = horseNode->data.get();
     horse->leader = horseToFollowNode->data.get();
-    assert(horse->joinHerdTime < this->clock);
+    assert(horseToFollowNode->data->joinHerdTime < this->clock);
     horse->followTime = this->clock;
     this->clock++;
     return StatusType::SUCCESS;
@@ -122,13 +124,13 @@ StatusType Plains::leave_herd(int horseId) {
     if (!horseNode || !horseNode->data->herd) {
         return StatusType::FAILURE;
     }
-    Herd* herd = horseNode->data->herd;
+    Herd *herd = horseNode->data->herd;
     try {
         herd->horses.remove(herd->horses.find(horseId));
         if (herd->isEmpty()) {
             moveHerdToEmpty(herd->id);
         }
-    } catch (const std::bad_alloc& e) {
+    } catch (const std::bad_alloc &e) {
         return StatusType::ALLOCATION_ERROR;
     }
     resetHorse(horseNode->data.get());
@@ -156,8 +158,8 @@ output_t<bool> Plains::leads(int horseId, int otherHorseId) {
         return StatusType::FAILURE;
     }
 
-    Horse* horse = horseNode->data.get();
-    Horse* otherHorse = otherHorseNode->data.get();
+    Horse *horse = horseNode->data.get();
+    Horse *otherHorse = otherHorseNode->data.get();
     if (!horse->herd || !otherHorse->herd || horse->herd != otherHorse->herd) {
         return false;
     }
@@ -176,10 +178,10 @@ output_t<bool> Plains::can_run_together(int herdId) {
         return StatusType::FAILURE;
     }
 
-    Herd* herd = herdNode->data.get();
+    Herd *herd = herdNode->data.get();
 
     auto candidateNode = herd->horses.findFirstMatchingNode(
-            [](Horse* horse) { return getLeader(horse) == nullptr; });
+            [](Horse *horse) { return getLeader(horse) == nullptr; });
     if (!candidateNode) {
         return false;
     }
@@ -187,24 +189,24 @@ output_t<bool> Plains::can_run_together(int herdId) {
 
     resetPaths(herd);
     return herd->horses.applyFuncBool(
-            [candidateHorse](Horse* horse) { return checkAndPlant(horse, candidateHorse); });
-
+            [candidateHorse](Horse *horse) { return checkAndPlant(horse, candidateHorse); });
 }
 
 // private methods
 
-Node<Herd>* Plains::moveHerdFromEmpty(int herdId, Node<Herd>* nodeToRemove) {
+// functions are used inside try
+Node<Herd> *Plains::moveHerdFromEmpty(int herdId, Node<Herd> *nodeToRemove) {
     emptyHerds.remove(nodeToRemove);
     return herds.insert(herdId, unique_ptr<Herd>(new Herd(herdId)));
-
 }
 
+// functions are used inside try
 void Plains::moveHerdToEmpty(int herdId) {
     herds.remove(herds.find(herdId));
     emptyHerds.insert(herdId, unique_ptr<Herd>(new Herd(herdId)));
 }
 
-Horse* Plains::getLeader(Horse* horse) {
+Horse *Plains::getLeader(Horse *horse) {
     if (!horse->leader || horse->herd != horse->leader->herd ||
         horse->leader->joinHerdTime >= horse->followTime) {
         return nullptr;
@@ -212,18 +214,18 @@ Horse* Plains::getLeader(Horse* horse) {
     return horse->leader;
 }
 
-void Plains::resetPaths(Herd* herd) {
-    herd->horses.applyFunc([](Horse* horse) { horse->pathId = 0; });
+void Plains::resetPaths(Herd *herd) {
+    herd->horses.applyFunc([](Horse *horse) { horse->pathId = 0; });
 }
 
-bool Plains::checkAndPlant(Horse* horse, Horse* candidate) {
+bool Plains::checkAndPlant(Horse *horse, Horse *candidate) {
     if (horse->pathId != 0 || horse == candidate) { // already seen horse or the same horse
         return true;
     }
     horse->pathId = horse->id;
 
-    Horse* currHorse = horse;
-    Horse* currLeader = getLeader(horse);
+    Horse *currHorse = horse;
+    Horse *currLeader = getLeader(horse);
     while (true) {
         if (currLeader == candidate) {
             return true;
@@ -244,7 +246,7 @@ bool Plains::checkAndPlant(Horse* horse, Horse* candidate) {
     }
 }
 
-void Plains::resetHorse(Horse* horse) {
+void Plains::resetHorse(Horse *horse) {
     horse->herd = nullptr;
     horse->leader = nullptr;
     horse->followTime = -1;
