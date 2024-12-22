@@ -38,7 +38,7 @@ private:
 
     static Horse* getLeader(Horse* horse);
 
-    static void resetPaths(Node<Herd>* herdNode);
+    static void resetPaths(Herd* herd);
 
     static bool checkAndPlant(Horse* horse, Horse* candidate);
 

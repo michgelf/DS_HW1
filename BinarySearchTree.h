@@ -110,7 +110,8 @@ void BinarySearchTree<T>::removeTwoSonsNode(Node<T>* nodeToRemove) {
     while (temp->hasLeft()) {
         temp = temp->left;
     }
-    nodeToRemove->data = std::move(temp->data); ///////////////////////////////// copy ctor?
+    nodeToRemove->key = temp->key;
+    nodeToRemove->data = std::move(temp->data);
     switch (temp->numSons()) {
         case 0:
             removeLeaf(temp);
