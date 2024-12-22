@@ -30,9 +30,9 @@ private:
     int clock;
     AVLTree<Horse> horses;
     AVLTree<Herd> herds;
-    AVLTree<Herd> emptyHerds;
+    AVLTree<int> emptyHerds;
 
-    Node<Herd>* moveHerdFromEmpty(int herdId, Node<Herd>* nodeToRemove);
+    Node<Herd>* moveHerdFromEmpty(int herdId, Node<int>* nodeToRemove);
 
     void moveHerdToEmpty(int herdId);
 
