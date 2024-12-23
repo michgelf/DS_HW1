@@ -163,7 +163,7 @@ output_t<bool> Plains::leads(int horseId, int otherHorseId) {
     }
 
     resetPaths(horse->herd);
-    return checkAndPlant(horse, otherHorse);
+    return trackFollowingConnection(horse, otherHorse);
 }
 
 
@@ -186,8 +186,10 @@ output_t<bool> Plains::can_run_together(int herdId) {
     auto candidateHorse = *(candidateNode->data);
 
     resetPaths(herd);
-    return herd->horses.applyFuncBool(
-            [candidateHorse](Horse* horse) { return checkAndPlant(horse, candidateHorse); });
+    return herd->horses.allNodesSatisfy(
+            [candidateHorse](Horse* horse) {
+                return trackFollowingConnection(horse, candidateHorse);
+            });
 }
 
 // private methods
@@ -213,10 +215,10 @@ Horse* Plains::getLeader(Horse* horse) {
 }
 
 void Plains::resetPaths(Herd* herd) {
-    herd->horses.applyFunc([](Horse* horse) { horse->pathId = 0; });
+    herd->horses.traverseAndApply([](Horse* horse) { horse->pathId = 0; });
 }
 
-bool Plains::checkAndPlant(Horse* horse, Horse* candidate) {
+bool Plains::trackFollowingConnection(Horse* horse, Horse* candidate) {
     if (horse->pathId != 0 || horse == candidate) { // already seen horse or the same horse
         return true;
     }

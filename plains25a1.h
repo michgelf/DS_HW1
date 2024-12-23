@@ -40,7 +40,7 @@ private:
 
     static void resetPaths(Herd* herd);
 
-    static bool checkAndPlant(Horse* horse, Horse* candidate);
+    static bool trackFollowingConnection(Horse* horse, Horse* candidate);
 
     static void resetHorse(Horse* horse);
 
