@@ -69,8 +69,7 @@ StatusType Plains::join_herd(int horseId, int herdId) {
     }
 
     auto herdNode = herds.find(herdId);
-    // todo if found herd ID dont check empty herds
-    auto emptyHerdNode = emptyHerds.find(herdId);
+    auto emptyHerdNode = herdNode ? nullptr : emptyHerds.find(herdId);
     if (!herdNode && !emptyHerdNode) {
         return StatusType::FAILURE;
     }
