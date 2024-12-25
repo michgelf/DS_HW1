@@ -32,17 +32,46 @@ private:
     AVLTree<Herd> herds;
     AVLTree<int> emptyHerds;
 
-    Node<Herd>* moveHerdFromEmpty(int herdId, Node<int>* nodeToRemove);
+    /**
+     * Move a herd from the empty herds tree to the non-empty herds tree.
+     * @param herdId ID of the herd to move.
+     * @param nodeToRemove node to remove from the empty herds tree.
+     * @return new node in the non-empty herds tree.
+     */
+    Node<Herd> *moveHerdFromEmpty(int herdId, Node<int> *nodeToRemove);
 
+    /**
+     * Move a herd to the empty herds tree.
+     * @param herdId ID of the herd to move.
+     */
     void moveHerdToEmpty(int herdId);
 
-    static Horse* getLeader(Horse* horse);
+    /**
+     * Get the leader of a horse.
+     * @param horse horse whose leader is to be found.
+     * @return leader of the horse.
+     */
+    static Horse *getLeader(Horse *horse);
 
-    static void resetPaths(Herd* herd);
+    /**
+     * Reset the path IDs of all horses in a herd.
+     * @param herd herd whose horses' path IDs are to be reset.
+     */
+    static void resetPaths(Herd *herd);
 
-    static bool checkAndPlant(Horse* horse, Horse* candidate);
+    /**
+    * Check if a horse leads another horse through chain and mark the path.
+    * @param horse horse to start from.
+    * @param candidate candidate horse to be checked.
+    * @return True if the candidate can be reached through a lead chain, false otherwise.
+    */
+    static bool checkAndPlant(Horse *horse, Horse *candidate);
 
-    static void resetHorse(Horse* horse);
+    /**
+    * @brief Reset a horse's attributes to the default values.
+    * @param horse horse to reset.
+    */
+    static void resetHorse(Horse *horse);
 
 public:
 
