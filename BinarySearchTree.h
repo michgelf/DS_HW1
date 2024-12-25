@@ -9,24 +9,66 @@ class BinarySearchTree : public BinaryTree<T> {
 private:
     int numNodes;
 
-    static Node<T>* findAux(Node<T>* currNode, int key);
+    /**
+     * Helper function to find a node with a given key.
+     * @param currNode current node.
+     * @param key key to search for.
+     * @return The node with the given key, or nullptr if not found.
+     */
+    static Node<T> *findAux(Node<T> *currNode, int key);
 
-    static Node<T>* insertAux(Node<T>* currNode, int key, unique_ptr<T> data);
+    /**
+     * Helper function to insert a node with a given key and data.
+     * @param currNode current node.
+     * @param key key of the new node.
+     * @param data data of the new node.
+     * @return The newly inserted node.
+     */
+    static Node<T> *insertAux(Node<T> *currNode, int key, unique_ptr<T> data);
 
-    void removeLeaf(Node<T>* leaf); //assumes the given node is a leaf
+    /**
+     * Remove a leaf node.
+     * @param leaf The leaf node to remove.
+     */
+    void removeLeaf(Node<T> *leaf); //assumes the given node is a leaf
 
-    void removeSingleSonNode(Node<T>* singleSonNode); // assumes the given node has single son
+    /**
+     * Remove a node with a single child.
+     * @param singleSonNode node to remove.
+     */
+    void removeSingleSonNode(Node<T> *singleSonNode); // assumes the given node has single son
 
-    void removeTwoSonsNode(Node<T>* nodeToRemove); // assumes the given node has 2 sons
+    /**
+     * Remove a node with two children.
+     * @param nodeToRemove node to remove.
+     */
+    void removeTwoSonsNode(Node<T> *nodeToRemove); // assumes the given node has 2 sons
 
 public:
+
     BinarySearchTree();
 
-    Node<T>* find(int key) const;
+    /**
+     * Find a node with a given key.
+     * @param key key to search for.
+     * @return node with the given key, or nullptr if not found.
+     */
+    Node<T> *find(int key) const;
 
-    virtual Node<T>* insert(int key, unique_ptr<T> data);
+    /**
+    * Insert a node with a given key and data.
+    * @param key key of the new node.
+    * @param data data of the new node.
+    * @return newly inserted node.
+    */
+    virtual Node<T> *insert(int key, unique_ptr<T> data);
 
-    virtual Node<T>* remove(Node<T>* nodeToRemove);
+    /**
+    * Remove a node.
+    * @param nodeToRemove node to remove.
+    * @return parent of the removed node.
+    */
+    virtual Node<T> *remove(Node<T> *nodeToRemove);
 
 };
 
@@ -35,7 +77,7 @@ BinarySearchTree<T>::BinarySearchTree() : BinaryTree<T>(), numNodes(0) {};
 
 
 template<class T>
-Node<T>* BinarySearchTree<T>::findAux(Node<T>* currNode, int key) {
+Node<T> *BinarySearchTree<T>::findAux(Node<T> *currNode, int key) {
     if (currNode == nullptr || currNode->key == key) {
         return currNode;
     } else if (key < currNode->key) {
@@ -46,7 +88,7 @@ Node<T>* BinarySearchTree<T>::findAux(Node<T>* currNode, int key) {
 }
 
 template<class T>
-Node<T>* BinarySearchTree<T>::insertAux(Node<T>* currNode, int key, unique_ptr<T> data) {
+Node<T> *BinarySearchTree<T>::insertAux(Node<T> *currNode, int key, unique_ptr<T> data) {
     if (key < currNode->key) {
         if (currNode->hasLeft()) {
             return insertAux(currNode->left, key, std::move(data));
@@ -64,7 +106,7 @@ Node<T>* BinarySearchTree<T>::insertAux(Node<T>* currNode, int key, unique_ptr<T
 }
 
 template<class T>
-void BinarySearchTree<T>::removeLeaf(Node<T>* leaf) {
+void BinarySearchTree<T>::removeLeaf(Node<T> *leaf) {
     // assumes the given node is a leaf!
     switch (leaf->sonKind()) {
         case SonKind::NO_PARENT:
@@ -82,8 +124,8 @@ void BinarySearchTree<T>::removeLeaf(Node<T>* leaf) {
 }
 
 template<class T>
-void BinarySearchTree<T>::removeSingleSonNode(Node<T>* singleSonNode) {
-    Node<T>* childNode = singleSonNode->hasLeft() ? singleSonNode->left : singleSonNode->right;
+void BinarySearchTree<T>::removeSingleSonNode(Node<T> *singleSonNode) {
+    Node<T> *childNode = singleSonNode->hasLeft() ? singleSonNode->left : singleSonNode->right;
 
     switch (singleSonNode->sonKind()) {
         case SonKind::NO_PARENT:
@@ -105,8 +147,8 @@ void BinarySearchTree<T>::removeSingleSonNode(Node<T>* singleSonNode) {
 }
 
 template<class T>
-void BinarySearchTree<T>::removeTwoSonsNode(Node<T>* nodeToRemove) {
-    Node<T>* temp = nodeToRemove->right;
+void BinarySearchTree<T>::removeTwoSonsNode(Node<T> *nodeToRemove) {
+    Node<T> *temp = nodeToRemove->right;
     while (temp->hasLeft()) {
         temp = temp->left;
     }
@@ -125,13 +167,13 @@ void BinarySearchTree<T>::removeTwoSonsNode(Node<T>* nodeToRemove) {
 }
 
 template<class T>
-Node<T>* BinarySearchTree<T>::find(int key) const {
+Node<T> *BinarySearchTree<T>::find(int key) const {
     return findAux(this->root, key);
 }
 
 template<class T>
-Node<T>* BinarySearchTree<T>::insert(int key, unique_ptr<T> data) {
-    Node<T>* newNode;
+Node<T> *BinarySearchTree<T>::insert(int key, unique_ptr<T> data) {
+    Node<T> *newNode;
     if (this->isEmpty()) {
         newNode = this->root = new Node<T>(key, std::move(data), nullptr);
     } else {
@@ -145,8 +187,8 @@ Node<T>* BinarySearchTree<T>::insert(int key, unique_ptr<T> data) {
 }
 
 template<class T>
-Node<T>* BinarySearchTree<T>::remove(Node<T>* nodeToRemove) {
-    Node<T>* parent = nodeToRemove->parent;
+Node<T> *BinarySearchTree<T>::remove(Node<T> *nodeToRemove) {
+    Node<T> *parent = nodeToRemove->parent;
     switch (nodeToRemove->numSons()) {
         case 0:
             removeLeaf(nodeToRemove);
