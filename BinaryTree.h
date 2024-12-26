@@ -7,12 +7,24 @@
 template<class T>
 class BinaryTree {
 
+
+    /**
+     * Apply a function to each node in the tree.
+     */
     template<typename Func>
     void traverseAndApplyAux(Node<T>* node, Func func);
 
+    /**
+     * Apply a boolean function to each node in the tree.
+     * @return True if the function returns true for all nodes, false otherwise.
+     */
     template<typename Func>
     bool allNodesSatisfyAux(Node<T>* node, Func func);
 
+    /**
+     * Find the first node that matches a given condition.
+     * @return The first node that matches the condition, or nullptr if no match is found.
+     */
     template<class Condition>
     Node<T>* findFirstMatchingNodeAux(Node<T>* node, Condition cond);
 
@@ -23,18 +35,32 @@ public:
 
     virtual ~BinaryTree();
 
+    /**
+     * Check if the tree is empty.
+     */
     bool isEmpty() const;
 
     BinaryTree(const BinaryTree&) = delete;
 
     BinaryTree& operator=(const BinaryTree&) = delete;
 
+    /**
+     * Apply a function to each node in the tree.
+     */
     template<typename Func>
     void traverseAndApply(Func func);
 
+    /**
+     * Apply a boolean function to each node in the tree.
+     * @return True if the function returns true for all nodes, false otherwise.
+     */
     template<typename Func>
     bool allNodesSatisfy(Func func);
 
+    /**
+     * Find the first node that matches a given condition.
+     * @return The first node that matches the condition, or nullptr if no match is found.
+     */
     template<class Condition>
     Node<T>* findFirstMatchingNode(Condition cond);
 
