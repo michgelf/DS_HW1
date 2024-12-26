@@ -8,8 +8,8 @@ struct Herd;
 struct Horse {
     int id;
     int speed;
-    Horse* leader;
-    Herd* herd;
+    Horse *leader;
+    Herd *herd;
     int followTime;
     int joinHerdTime;
     int pathId;
@@ -21,10 +21,13 @@ struct Horse {
 
 struct Herd {
     int id;
-    AVLTree<Horse*> horses;
+    AVLTree<Horse *> horses;
 
     explicit Herd(int id) : id(id), horses() {}
 
+    /**
+    * Check if the herd is empty.
+    */
     bool isEmpty() const { return horses.isEmpty(); }
 };
 

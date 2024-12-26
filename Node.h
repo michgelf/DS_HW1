@@ -16,18 +16,18 @@ class Node {
 public:
     int key;
     unique_ptr<T> data;
-    Node* left;
-    Node* right;
-    Node* parent;
+    Node *left;
+    Node *right;
+    Node *parent;
     int height;
 
-    Node(int key, unique_ptr<T> data, Node<T>* parent);
+    Node(int key, unique_ptr<T> data, Node<T> *parent);
 
     virtual ~Node();
 
-    Node(const Node&) = delete;
+    Node(const Node &) = delete;
 
-    Node& operator=(const Node&) = delete;
+    Node &operator=(const Node &) = delete;
 
     bool hasLeft() const;
 
@@ -44,31 +44,45 @@ public:
 
 
 template<class T>
-Node<T>::Node(int key, unique_ptr<T> data, Node<T>* parent) : key(key), data(std::move(data)),
+Node<T>::Node(int key, unique_ptr<T> data, Node<T> *parent) : key(key), data(std::move(data)),
                                                               left(nullptr), right(nullptr),
                                                               parent(parent), height(0) {};
 
 template<class T>
 Node<T>::~Node() {
-    delete this->left;
-    delete this->right;
+    delete this->left;  // Recursively delete left child
+    delete this->right;  // Recursively delete right child
 };
 
+/**
+ * // Check if the node has a left child
+ */
 template<class T>
 bool Node<T>::hasLeft() const {
     return this->left != nullptr;
 }
 
+/**
+ * // Check if the node has a right child
+ */
 template<class T>
 bool Node<T>::hasRight() const {
     return this->right != nullptr;
 }
 
+/**
+ * // Check if the node has a right parent
+ */
 template<class T>
 bool Node<T>::hasParent() const {
     return this->parent != nullptr;
 }
 
+
+/**
+ * Determine the kind of son (left or right) this node is.
+ * @return SonKind enum representing the kind of son.
+ */
 template<class T>
 SonKind Node<T>::sonKind() const {
     if (!hasParent()) {
@@ -80,6 +94,10 @@ SonKind Node<T>::sonKind() const {
     return SonKind::LEFT;
 }
 
+/**
+ * Count the number of children this node has.
+ * @return The number of children (0, 1, or 2).
+ */
 template<class T>
 int Node<T>::numSons() const {
     return hasLeft() + hasRight();
